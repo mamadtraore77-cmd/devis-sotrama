@@ -6,9 +6,9 @@
     <title>SOTRAMA - Calculateur de Devis</title>
     
     <!-- Meta tags for PWA -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#E59640">
-    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="apple-touch-icon" href="./logo.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -48,7 +48,7 @@
 
     <header class="bg-sotrama-orange shadow-md border-b-4 border-sotrama-yellow relative z-10">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col items-center justify-center">
-            <img src="logo.png" alt="SOTRAMA Logo" class="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg bg-white mb-2">
+            <img src="./logo.png" alt="SOTRAMA Logo" class="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg bg-white mb-2">
             <h1 class="text-2xl font-extrabold tracking-tight text-white drop-shadow-md">SOTRAMA Devis</h1>
         </div>
     </header>
@@ -225,7 +225,7 @@
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(registration => {
+                navigator.serviceWorker.register('./sw.js', { scope: '/devis-sotrama/' }).then(registration => {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, err => {
                     console.log('ServiceWorker registration failed: ', err);
