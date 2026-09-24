@@ -1,6 +1,6 @@
 {
   "name": "SOTRAMA Devis",
-  "short_name": "SOTRAMA",
+  "short_name": "SOTRAMA DEVIS",
   "description": "Calculateur de devis de transport SOTRAMA.",
   "start_url": "/devis-sotrama/",
   "scope": "/devis-sotrama/",
