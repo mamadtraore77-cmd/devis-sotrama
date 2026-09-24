@@ -1,9 +1,9 @@
-const CACHE_NAME = 'sotrama-v1';
+const CACHE_NAME = 'sotrama-v3';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/logo.png',
-  '/manifest.json'
+  '/devis-sotrama/',
+  '/devis-sotrama/index.html',
+  '/devis-sotrama/logo.png',
+  '/devis-sotrama/manifest.json'
 ];
 
 self.addEventListener('install', event => {
