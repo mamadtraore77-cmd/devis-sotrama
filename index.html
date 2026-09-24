@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SOTRAMA - Calculateur de Devis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sotrama: {
+                            green: '#2E8C2B',
+                            yellow: '#F2D32F',
+                            orange: '#E59640',
+                            light: '#FDF8F3'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Masquer les flèches des inputs number pour un rendu plus propre */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col bg-sotrama-light">
+
+    <header class="bg-sotrama-orange shadow-md border-b-4 border-sotrama-yellow relative z-10">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col items-center justify-center">
+            <img src="logo.jpeg" alt="SOTRAMA Logo" class="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg bg-white mb-2">
+            <h1 class="text-2xl font-extrabold tracking-tight text-white drop-shadow-md">SOTRAMA Devis</h1>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-start sm:items-center justify-center p-4 sm:p-8">
+        <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-sotrama-orange/20">
+            
+            <div class="p-6 sm:p-10 lg:w-1/2 bg-white flex flex-col justify-center">
+                <div class="mb-8 text-center sm:text-left">
+                    <h2 class="text-2xl font-bold text-sotrama-green mb-2">Dimensions du colis</h2>
+                    <p class="text-slate-500 text-sm sm:text-base">Saisissez les dimensions pour une estimation immédiate.</p>
+                </div>
+
+                <form id="calcForm" class="space-y-5" onsubmit="event.preventDefault();">
+                    <div class="space-y-5">
+                        <!-- Longueur -->
+                        <div>
+                            <label for="length" class="block text-sm sm:text-base font-semibold text-slate-700 mb-2">Longueur (cm)</label>
+                            <input type="number" id="length" min="1" step="0.1" inputmode="decimal" placeholder="ex: 58" 
+                                class="w-full px-5 py-4 border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-sotrama-green/20 focus:border-sotrama-green transition-all bg-slate-50 outline-none text-xl text-slate-800 font-bold placeholder:text-slate-300 placeholder:font-normal appearance-none">
+                        </div>
+
+                        <!-- Largeur -->
+                        <div>
+                            <label for="width" class="block text-sm sm:text-base font-semibold text-slate-700 mb-2">Largeur (cm)</label>
+                            <input type="number" id="width" min="1" step="0.1" inputmode="decimal" placeholder="ex: 43" 
+                                class="w-full px-5 py-4 border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-sotrama-green/20 focus:border-sotrama-green transition-all bg-slate-50 outline-none text-xl text-slate-800 font-bold placeholder:text-slate-300 placeholder:font-normal appearance-none">
+                        </div>
+
+                        <!-- Hauteur -->
+                        <div>
+                            <label for="height" class="block text-sm sm:text-base font-semibold text-slate-700 mb-2">Hauteur (cm)</label>
+                            <input type="number" id="height" min="1" step="0.1" inputmode="decimal" placeholder="ex: 76" 
+                                class="w-full px-5 py-4 border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-sotrama-green/20 focus:border-sotrama-green transition-all bg-slate-50 outline-none text-xl text-slate-800 font-bold placeholder:text-slate-300 placeholder:font-normal appearance-none">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="p-6 sm:p-10 lg:w-1/2 bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-200 flex flex-col justify-center relative min-h-[400px]">
+                
+                <!-- Message d'attente -->
+                <div id="emptyState" class="text-center transition-opacity duration-300 absolute inset-0 flex flex-col items-center justify-center p-6 z-0">
+                    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-sotrama-yellow/20 text-sotrama-orange mb-6 shadow-inner">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">En attente de saisie</h3>
+                    <p class="text-slate-500">Remplissez les 3 dimensions de votre colis.</p>
+                </div>
+
+                <!-- Résultats -->
+                <div id="resultState" class="hidden opacity-0 transition-opacity duration-500 flex flex-col h-full justify-center w-full z-10">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 border-b-2 border-slate-200 pb-3 mb-6">Résumé SOTRAMA</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm">
+                                <span class="text-slate-500 font-medium">Type d'envoi</span>
+                                <span class="font-bold text-sotrama-green">Colis Standard</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm">
+                                <span class="text-slate-500 font-medium">Volume</span>
+                                <span id="resVolume" class="font-bold text-slate-800 text-right">-- cm³</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 bg-sotrama-green rounded-3xl p-8 text-white shadow-xl relative overflow-hidden border-b-8 border-sotrama-yellow">
+                        <div class="absolute -right-4 -top-4 opacity-10">
+                            <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        </div>
+                        <p class="text-sotrama-light text-sm font-semibold mb-2 relative z-10 uppercase tracking-widest opacity-90">Tarif estimé TTC</p>
+                        <div class="flex items-baseline gap-2 relative z-10">
+                            <span id="resPrice" class="text-6xl sm:text-7xl font-extrabold tracking-tight drop-shadow-md">0,00</span>
+                            <span class="text-3xl font-bold text-sotrama-yellow">€</span>
+                        </div>
+                        <div class="h-8 mt-4 relative z-10">
+                            <p id="minPriceBadge" class="text-xs sm:text-sm text-sotrama-green bg-sotrama-yellow inline-flex items-center px-4 py-2 rounded-full font-bold shadow-md hidden">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Tarif minimum appliqué
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Éléments du formulaire
+            const inputL = document.getElementById('length');
+            const inputW = document.getElementById('width');
+            const inputH = document.getElementById('height');
+            
+            // Éléments d'affichage
+            const emptyState = document.getElementById('emptyState');
+            const resultState = document.getElementById('resultState');
+            const resVolume = document.getElementById('resVolume');
+            const resPrice = document.getElementById('resPrice');
+            const minPriceBadge = document.getElementById('minPriceBadge');
+
+            // Constantes de calcul (Nouveau référentiel: 58x43x76 = 90€)
+            const REF_VOLUME = 58 * 43 * 76; // 189 544 cm3
+            const REF_PRICE = 90; // €
+            const RATIO = REF_PRICE / REF_VOLUME; // Prix par cm3 (approx. 0.0004748)
+            const MIN_PRICE = 10; // €
+
+            // Fonction pour cacher le résultat
+            const hideResult = () => {
+                resultState.classList.remove('opacity-100');
+                resultState.classList.add('opacity-0');
+                setTimeout(() => {
+                    resultState.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                    setTimeout(() => {
+                        emptyState.style.opacity = '1';
+                    }, 50);
+                }, 300);
+            };
+
+            // Fonction principale de calcul
+            const calculateQuote = () => {
+                const l = parseFloat(inputL.value);
+                const w = parseFloat(inputW.value);
+                const h = parseFloat(inputH.value);
+
+                // Vérifier si les 3 dimensions sont valides et > 0
+                if (!isNaN(l) && !isNaN(w) && !isNaN(h) && l > 0 && w > 0 && h > 0) {
+                    const volume = l * w * h;
+                    let finalPrice = volume * RATIO;
+                    let isMinPriceApplied = false;
+
+                    // Application du tarif minimum
+                    if (finalPrice < MIN_PRICE) {
+                        finalPrice = MIN_PRICE;
+                        isMinPriceApplied = true;
+                    }
+
+                    // Mise à jour de l'UI
+                    resVolume.innerText = `${volume.toLocaleString('fr-FR')} cm³`;
+                    resPrice.innerText = finalPrice.toFixed(2).replace('.', ',');
+
+                    if(isMinPriceApplied) {
+                        minPriceBadge.classList.remove('hidden');
+                    } else {
+                        minPriceBadge.classList.add('hidden');
+                    }
+
+                    // Transition d'affichage
+                    emptyState.style.opacity = '0';
+                    setTimeout(() => {
+                        emptyState.classList.add('hidden');
+                        resultState.classList.remove('hidden');
+                        setTimeout(() => {
+                            resultState.classList.remove('opacity-0');
+                            resultState.classList.add('opacity-100');
+                        }, 50);
+                    }, 300);
+                } else {
+                    hideResult();
+                }
+            };
+
+            // Ajouter les écouteurs d'événements sur chaque champ pour le temps réel
+            inputL.addEventListener('input', calculateQuote);
+            inputW.addEventListener('input', calculateQuote);
+            inputH.addEventListener('input', calculateQuote);
+        });
+    </script>
+</body>
+</html>
