@@ -1,0 +1,17 @@
+{
+  "name": "SOTRAMA Devis",
+  "short_name": "SOTRAMA",
+  "description": "Calculateur de devis de transport SOTRAMA.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDF8F3",
+  "theme_color": "#E59640",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512"
+    }
+  ]
+}
