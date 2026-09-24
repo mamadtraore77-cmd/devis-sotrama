@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sotrama-v4';
+const CACHE_NAME = 'sotrama-v5';
 const urlsToCache = [
   '/devis-sotrama/',
   '/devis-sotrama/index.html',
